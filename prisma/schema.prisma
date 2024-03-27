@@ -11,16 +11,23 @@ generator client {
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
+  // url = "mongodb+srv://tahercisse0:2AhPcK0QT96RhTPS@cluster0.v6fda60.mongodb.net/"
+  relationMode = "prisma"
 }
+
+// Mes models
 
 model Post {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAT DateTime @default(now())
   slug     String    @unique
   title    String
-  body     String
+  content     String @db.String
+  image String?
+  view Int @default(0)
+  nbComments Int @default(0)
   author   User      @relation(fields: [authorId], references: [id])
   authorId String    @db.ObjectId
-  comments Comment[]
 }
 
 model User {
@@ -31,12 +38,12 @@ model User {
   posts   Post[]
 }
 
-model Comment {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  comment String
-  post    Post   @relation(fields: [postId], references: [id])
-  postId  String @db.ObjectId
-}
+// model Comment {
+//   id      String @id @default(auto()) @map("_id") @db.ObjectId
+//   comment String
+//   post    Post   @relation(fields: [postId], references: [id])
+//   postId  String @db.ObjectId
+// }
 
 // Address is an embedded document
 type Address {
